@@ -1,0 +1,32 @@
+TASK A
+----------
+from sleep(1): 
+real	0m1.002s
+user	0m0.000s
+sys	0m0.002s
+
+from usleep(1000000):
+real	0m1.002s
+user	0m0.002s
+sys	0m0.001s
+
+
+from nanosleep(&ts, NULL) with ts.tv_sec = 1 and ts.tv_nsec = 0:
+real	0m1.004s
+user	0m0.001s
+sys	0m0.004s
+
+busy_wait() with clock_gettime():
+real	0m1.002s
+user	0m1.001s
+sys	0m0.001s
+
+busy_wait() with times():
+real	0m1.003s
+user	0m0.260s
+sys	0m0.743s
+This one uses the most system time, because the OS is repeatedly asked for time info while the program "sleeps".
+This method operating the most in the kernel space.
+
+TASK B
+------------
