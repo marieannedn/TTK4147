@@ -28,5 +28,22 @@ sys	0m0.743s
 This one uses the most system time, because the OS is repeatedly asked for time info while the program "sleeps".
 This method operating the most in the kernel space.
 
-TASK B
-------------
+TASK B - Latency
+------------------
+rdtsc():
+real	0m0.599s
+user	0m0.595s
+sys	0m0.005s
+Latency: 0.599/10000000 = 5.99*10⁻8 = 59.9 ns
+
+clock_gettime():
+real	0m0.464s
+user	0m0.464s
+sys	0m0.001s
+Latency: 0.464/10000000 = 46.4 ns
+
+times():
+real	0m9.419s
+user	0m1.581s
+sys	0m7.837s
+Latency: 9.419/10000000 = 941.9 ns
