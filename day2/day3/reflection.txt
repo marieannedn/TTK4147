@@ -1,0 +1,44 @@
+TASK A
+------htop-task 1-------
+Memory = RAM
+SWAP = Virtual Memory on SSD
+Memory maxes out, and then Swap starts increasing
+
+---- xdim = 1000 ---
+Memory maxet aldri ut, vi gikk aldri inn i Swap
+
+---- xdim = 10000 ---
+enda mindre av Mem brukes
+
+Ettersom xydim er fixed, vil ydim minke ved økende xdim. Vi reduserer antallet pointers/adresser.
+
+---- xdim = 10000 med initialisering ---
+Memory maxes ut, swap går i gang. omtrent samme minnebruk som oppgave 1
+
+TASK B
+----part 1---
+allocated 15 values to array of size 10:
+Array:{0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 1041, 
+3493450228956295745, 2318281922439028780, 3184080310742559792, 
+3756050674436813600, 2318286320485539884, 3761385487960649777, 
+4049354197591929657, 3762534533463160121, 3618696396546255925, 
+4121695474169753912, 2318280926191694384, 3688509874502119731, 
+4122259523668226097, 3834589821002725687, 3761692294637760566, 
+3472334906199651891, 4049360798922973228, 3834032454573896502}
+
+Ser ut til at den begynner å returnere adresser?
+
+--- part 2 ---
+AddressSanitizer: CHECK failed: sanitizer_allocator_primary64.h:131 "((kSpaceBeg)) == ((address_range.Init(TotalSpaceSize, PrimaryAllocatorName, kSpaceBeg)))" (0x500000000000, 0xfffffffffffffff4) (tid=5340)
+    <empty stack>
+
+The AddressSanitizer flag is a check to prevent memory and address jumble.
+Fails because we aren't allocating enough memory.
+
+TASK C
+Funker ikke lengre på RPi...
+
+TASK D 
+Den frigjorte plassen vil aldri være stor nok til neste blokk. Dataen må lagres et annet sted i minnet.
+Du må ha en stor temp et annet sted hvor du kan mellomlagre dataen for å kunne bruke frigjøre plass. 
+
