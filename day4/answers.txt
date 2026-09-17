@@ -1,0 +1,14 @@
+TASK B
+FCFS - expectations
+This is a FIFO queue. The first arriving tasks, are the first to be executed.
+
+SPN - expectations
+The Process in the queue with the shortest runtime is chosen as the next process to run.
+
+HRRN - expectations
+using the formula for response ratio, the one with the smallest ratio should be next in line.
+= (time in queue + service time) / service time
+
+SRT - expectations
+
+Feedback - expectations
