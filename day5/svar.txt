@@ -1,0 +1,200 @@
+TASK A
+Får begge local counters til 1000 000, gir mening siden for-loppenmed inkrementering kjører så mange ganger.
+Global counter varierer, antar den har en min-verdi på 1000 000. Blir ofte større.
+Når begge threads inkrementerer denne 1000000 ganger hver, bør den bli 2000 000.
+Vi har med andre ord race conditions.
+
+TASK B
+WARNING: ThreadSanitizer: data race (pid=1273)
+  Write of size 8 at 0x0055646d34e0 by thread T2:
+    #0 fn /home/student/group06/ex4/programA.c:14:22 (a.out+0xfaf98) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+
+  Previous write of size 8 at 0x0055646d34e0 by thread T1:
+    #0 fn /home/student/group06/ex4/programA.c:14:22 (a.out+0xfaf98) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+
+  Location is global 'globalCounter' of size 8 at 0x0055646d34e0 (a.out+0x15834e0)
+
+  Thread T2 (tid=1276, running) created by main thread at:
+    #0 pthread_create <null> (a.out+0x6b410) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+    #1 main /home/student/group06/ex4/programA.c:28:5 (a.out+0xfb054) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+
+  Thread T1 (tid=1275, running) created by main thread at:
+    #0 pthread_create <null> (a.out+0x6b410) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+    #1 main /home/student/group06/ex4/programA.c:27:5 (a.out+0xfb03c) (BuildId: 5c3c6b5acd425fe040ed35ba8e61407a38dd93d5)
+
+SUMMARY: ThreadSanitizer: data race /home/student/group06/ex4/programA.c:14:22 in fn
+
+Med andre ord, race conditions som forventet.
+
+TASK C 
+MED SEM
+Local counter done: 1000000, enter wait state 
+Local counter done: 1000000, enter wait state 
+Threads joined, global counter finished at value 2000000
+real	0m0.366s
+user	0m0.703s
+sys	0m0.025s
+
+UTEN SEM
+Threads created 
+Local counter done: 1000000, enter wait state 
+Local counter done: 1000000, enter wait state 
+Threads joined, global counter finished at value 1000150
+
+real	0m0.007s
+user	0m0.007s
+sys	0m0.004s
+
+gir mening, er mye mer wait time men ikke så mye mer jobbing for sys
+med sem gjør den 4000000 addisjoner, uten sem gjør den mindre
+
+Real rime mindre enn summen, fordi threadsene kjærer i parallell
+
+TASK D
+Antok at kjøretidsprioritering ble helt feil, da Low ankommer først. Vi ender med  en priority inversion.
+
+Ble observert at low får den delte ressursen før high, men at low blir tvunget til å vente på at medium skal fullføre før den selv kan slippe ressursen og 
+la high kjøre. endte med følgende rekkefælge: Medium, Low, high
+
+TASK E
+b:1 b:2 M0: med priority waiting for sync
+ 
+b:3 H0: high priority waiting for sync
+ 
+L0: low priority waiting for sync
+ 
+-------------------Start test-------------------
+b:3 H1: high usleep
+ 
+b:2 M1: med usleep
+ 
+b:1 L1: low priority thread waits lock
+ 
+b:1 L2: low priority thread has lock
+ 
+b:1 L3: low priority thread runs with lock
+ 
+b:2 M2: med priority thread runs
+ 
+b:3 H3: high priority thread waits lock
+ 
+b:1 L4: low priority thread runs with lock
+ 
+b:1 L5: low priority thread runs with lock
+ 
+b:1 L6: low priority thread return lock
+ 
+b:3 H4: high priority thread has lock
+ 
+b:3 H5: high priority thread runs with lock
+ 
+b:3 H6: high priority thread runs with lock
+ 
+b:3 H7: high priority thread return lock
+ 
+b:2 M3: med priority thread runs
+ 
+b:2 M4: med priority thread runs
+ 
+b:2 M5: med priority thread runs
+ 
+b:2 M6: med priority thread runs
+ 
+-------------------End test-------------------
+Finished
+
+Kjørte som forventet
+
+TASK F
+Initializing singleton...
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{0 0 0 0}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+Got singleton 0x7f74000f80:{1 22 333 4444}
+
+Må være noe galt inne i dobbeltsjekken i getSingleton-funksjonen som gjør at Singleton-en først blir initialisert til {0 0 0 0} før den får de ønskede {1 22 333 4444}.
+
+TASK G
+SUMMARY: ThreadSanitizer: data race (/home/student/group06/ex4/double_checked+0xfb0f4) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a) 
+==================
+Got singleton 0x7f9fe01ec0:{1 0 0 0}
+Got singleton 0x7f9fe01ec0:{1 22 0 0}
+==================
+WARNING: ThreadSanitizer: data race (pid=1537)
+  Read of size 8 at 0x007f9fe01ed8 by thread T17:
+    #0 <null> <null> (double_checked+0xfb10c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #1 <null> <null> (double_checked+0x6b35c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+
+  Previous write of size 8 at 0x007f9fe01ed8 by thread T3:
+    #0 malloc <null> (double_checked+0x69320) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #1 <null> <null> (double_checked+0xfafb8) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #2 <null> <null> (double_checked+0xfb0e0) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #3 <null> <null> (double_checked+0x6b35c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+
+  Location is heap block of size 32 at 0x007f9fe01ec0 allocated by thread T3:
+    #0 malloc <null> (double_checked+0x69320) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #1 <null> <null> (double_checked+0xfafb8) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #2 <null> <null> (double_checked+0xfb0e0) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #3 <null> <null> (double_checked+0x6b35c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+
+  Thread T17 (tid=1556, running) created by main thread at:
+    #0 pthread_create <null> (double_checked+0x6b410) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #1 <null> <null> (double_checked+0xfb19c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #2 <null> <null> (libc.so.6+0x22258) (BuildId: 13bc4af497c4104410d1e268e575ad7f1df46dd3)
+
+  Thread T3 (tid=1541, running) created by main thread at:
+    #0 pthread_create <null> (double_checked+0x6b410) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #1 <null> <null> (double_checked+0xfb19c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a)
+    #2 <null> <null> (libc.so.6+0x22258) (BuildId: 13bc4af497c4104410d1e268e575ad7f1df46dd3)
+
+SUMMARY: ThreadSanitizer: data race (/home/student/group06/ex4/double_checked+0xfb10c) (BuildId: c8a6a6d8eb17bf7079a85658a1275fcbc5607a2a) 
+
+Den endres mens semaphoren er i wait, derav race conditions. Vi vil heller bare inite i begynnelsen av programmet
+
+TASK H
